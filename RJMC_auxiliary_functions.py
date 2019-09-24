@@ -18,7 +18,6 @@ from scipy.stats import distributions
 from scipy.stats import linregress
 from scipy.optimize import minimize,curve_fit
 import random as rm
-from pymc3.stats import hpd
 import matplotlib.patches as mpatches
 from datetime import datetime,date
 import copy
@@ -411,6 +410,7 @@ def create_param_triangle_plot_4D(trace,tracename,lit_values,properties,compound
         plt.savefig(file_loc+tracename+'.png')
         plt.close()
         #plt.show()
+
     return
         
         
@@ -493,10 +493,10 @@ def create_percent_dev_triangle_plot(trace,tracename,lit_values,properties,compo
     
     handles,labels = axs[0,1].get_legend_handles_labels()
     fig.legend(handles,labels,loc=[0.05,0.3])
-    
     plt.savefig(file_loc+tracename+'.png')
     plt.close()
     #plt.show()
+
 
 
 def import_literature_values(criteria,compound):
