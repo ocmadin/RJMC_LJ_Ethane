@@ -19,12 +19,6 @@ from scipy.stats import linregress
 from scipy.stats import gamma,expon
 from scipy.optimize import minimize,curve_fit
 import random as rm
-from datetime import datetime,date
-import copy
-import math
-import pymbar
-from statsmodels.stats.proportion import multinomial_proportions_confint
-
 
 def computePercentDeviations(compound_2CLJ,temp_values_rhol,temp_values_psat,temp_values_surftens,parameter_values,rhol_data,psat_data,surftens_data,T_c_data,rhol_hat_models,Psat_hat_models,SurfTens_hat_models,T_c_hat_models):
     
@@ -412,6 +406,7 @@ def create_param_triangle_plot_4D(trace,tracename,lit_values,properties,compound
         plt.savefig(file_loc+tracename+'.png')
         plt.close()
         #plt.show()
+
     return
         
         
@@ -494,10 +489,10 @@ def create_percent_dev_triangle_plot(trace,tracename,lit_values,properties,compo
     
     handles,labels = axs[0,1].get_legend_handles_labels()
     fig.legend(handles,labels,loc=[0.05,0.3])
-    
     plt.savefig(file_loc+tracename+'.png')
     plt.close()
     #plt.show()
+
 
 
 def import_literature_values(criteria,compound):
