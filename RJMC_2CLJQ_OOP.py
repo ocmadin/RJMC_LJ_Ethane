@@ -657,11 +657,10 @@ class RJMC_Simulation():
         if self.prob_conf is not None:
             print('95% confidence intervals for probability',self.prob_conf)
         
-        if self.biasing_factor != [0,0,0]:
-            self.unbiased_prob = unbias_simulation(self.biasing_factor,self.prob)
-            print('Unbiased probabilities')
-        else:
-            self.unbiased_prob = self.prob
+
+        self.unbiased_prob = unbias_simulation(self.biasing_factor,self.prob)
+        print('Unbiased probabilities')
+
 
 
         print('Experimental sampling ratio:', self.Exp_ratio)
