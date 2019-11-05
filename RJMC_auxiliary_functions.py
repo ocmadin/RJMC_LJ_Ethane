@@ -16,7 +16,7 @@ from LennardJones_correlations import LennardJones
 from LennardJones_2Center_correlations import LennardJones_2C
 from scipy.stats import distributions
 from scipy.stats import linregress
-from scipy.stats import gengamma,expon
+from scipy.stats import gengamma,expon,gamma
 from scipy.optimize import minimize,curve_fit
 import random as rm
 
@@ -728,15 +728,17 @@ def fit_gamma(trace,bins=25):
     plt.show()
     return popt
 
-def fit_gamma_sp(trace,plot=False):
-    alpha, beta, loc, scale = gengamma.fit(trace[:,4],loc=0)
+def fit_gamma_sp(trace,factor=5,plot=False):
+    a,loc,theta = gamma.fit(trace[:,4],floc=0)
     if plot == True:
         xmax = max(trace[:,4])
         xmin = min(trace[:,4])
-        xdata = np.linspace(xmin,xmax,num=500)
-        plt.plot(xdata,gengamma.pdf(xdata,alpha,beta,loc,scale))
+        xdata = np.linspace(0,xmax*2,num=500)
+        #plt.plot(xdata,gamma.pdf(xdata,a,loc,theta))
+        plt.plot(xdata,gamma.pdf(xdata,a/factor,loc,theta*factor))        
         plt.hist(trace[:,4],bins=50,density=True)
-    return alpha, beta, loc, scale
+        plt.show()
+    return a/factor, loc, theta*factor
 
 
 def plot_BAR_values(BAR_trace):
