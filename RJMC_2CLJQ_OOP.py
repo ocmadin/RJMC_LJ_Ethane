@@ -657,11 +657,10 @@ class RJMC_Simulation():
         if self.prob_conf is not None:
             print('95% confidence intervals for probability',self.prob_conf)
         
-        if self.biasing_factor != [0,0,0]:
-            self.unbiased_prob = unbias_simulation(self.biasing_factor,self.prob)
-            print('Unbiased probabilities')
-        else:
-            self.unbiased_prob = self.prob
+
+        self.unbiased_prob = unbias_simulation(np.asarray(self.biasing_factor),np.asarray(self.prob))
+        print('Unbiased probabilities')
+
 
 
         print('Experimental sampling ratio:', self.Exp_ratio)
@@ -806,8 +805,8 @@ class RJMC_Simulation():
 
             Q_prior = [prior_type,new_prior]
         elif prior_type == 'gamma':
-            alpha, beta,loc,scale = fit_gamma_sp(self.trace_model_1)
-            new_prior = (alpha,beta,loc,scale)
+            alpha,loc,scale = fit_gamma_sp(self.trace_model_1)
+            new_prior = (alpha,loc,scale)
             Q_prior = [prior_type,new_prior]
         else:
             raise ValueError('Prior type not implemented')
@@ -1020,8 +1019,8 @@ class RJMC_Prior():
             self.epsilon_prior_function = self.dexp
             self.epsilon_prior_values = [eps_prior_vals[0],eps_prior_vals[1]]
         elif eps_prior_type == 'gamma':
-            self.epsilon_prior_function = self.dgengamma
-            self.epsilon_prior_values = [eps_prior_vals[0], eps_prior_vals[1],eps_prior_vals[2],eps_prior_vals[3]]
+            self.epsilon_prior_function = self.dgamma
+            self.epsilon_prior_values = [eps_prior_vals[0], eps_prior_vals[1],eps_prior_vals[2]]
 
     def sigma_prior(self):
         sig_prior_type, sig_prior_vals = self.prior_dict['sigma']
@@ -1030,8 +1029,8 @@ class RJMC_Prior():
             self.sigma_prior_function = self.dexp
             self.sigma_prior_values = [sig_prior_vals[0],sig_prior_vals[1]]
         elif sig_prior_type == 'gamma':
-            self.sigma_prior_function = self.dgengamma
-            self.sigma_prior_values = [sig_prior_vals[0], sig_prior_vals[1],sig_prior_vals[2],sig_prior_vals[2]]
+            self.sigma_prior_function = self.dgamma
+            self.sigma_prior_values = [sig_prior_vals[0], sig_prior_vals[1],sig_prior_vals[2]]
 
     def L_prior(self):
         L_prior_type, L_prior_vals = self.prior_dict['L']
@@ -1040,8 +1039,8 @@ class RJMC_Prior():
             self.L_prior_function = self.dexp
             self.L_prior_values = [L_prior_vals[0],L_prior_vals[1]]
         elif L_prior_type == 'gamma':
-            self.L_prior_function = self.dgengamma
-            self.L_prior_values = [L_prior_vals[0], L_prior_vals[1], L_prior_vals[2],L_prior_vals[3]]
+            self.L_prior_function = self.dgamma
+            self.L_prior_values = [L_prior_vals[0], L_prior_vals[1], L_prior_vals[2]]
 
     def Q_prior(self):
         Q_prior_type, Q_prior_vals = self.prior_dict['Q']
@@ -1050,8 +1049,8 @@ class RJMC_Prior():
             self.Q_prior_function = self.dexp
             self.Q_prior_values = [Q_prior_vals[0], Q_prior_vals[1]]
         elif Q_prior_type == 'gamma':
-            self.Q_prior_function = self.dgengamma
-            self.Q_prior_values = [Q_prior_vals[0], Q_prior_vals[1], Q_prior_vals[2],Q_prior_vals[3]]
+            self.Q_prior_function = self.dgamma
+            self.Q_prior_values = [Q_prior_vals[0], Q_prior_vals[1], Q_prior_vals[2]]
 
 
 def main():
