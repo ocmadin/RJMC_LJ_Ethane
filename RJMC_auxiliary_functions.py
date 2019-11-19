@@ -302,7 +302,7 @@ def create_param_triangle_plot_4D(trace,tracename,lit_values,properties,compound
     if np.shape(trace) != (0,):
     
         fig,axs=plt.subplots(4,4,figsize=(8,8))
-        fig.suptitle('Parameter Marginal Distributions, '+compound+', '+properties+', '+str(n_iter)+' steps',fontsize=20)
+        fig.suptitle('Parameter Marginal Distributions, '+compound+', '+properties,fontsize=20)
         
         axs[0,0].hist(trace[:,1],bins=50,color='m',density=True,label='RJMC Sampling')
         axs[1,1].hist(trace[:,2],bins=50,color='m',density=True)
@@ -335,8 +335,27 @@ def create_param_triangle_plot_4D(trace,tracename,lit_values,properties,compound
         #axs[3,3].axvline(x=Q_prior[0],color='r',linestyle='--')
         #axs[3,3].axvline(x=Q_prior[1],color='r',linestyle='--')
         
-        
 
+        
+        for i in range(4):
+            for j in range(4):
+                if i != j:
+                    bins = [[min(min(trace[:,j+1]),min(lit_values[:,j+1])),max(max(trace[:,j+1]),max(lit_values[:,j+1]))],[min(min(trace[:,i+1]),min(lit_values[:,i+1])),max(max(trace[:,i+1]),max(lit_values[:,i+1]))]]
+                    if i == 0 and j == 1:
+                        axs[i,j].hist2d(lit_values[:,j+1],lit_values[:,i+1],bins=50,cmap='cool',label='RJMC Sampling')
+                        axs[i,j].scatter(trace[::4,j+1],trace[::4,i+1],color='0.25',marker='o',alpha=0.5,facecolors='none',label='Pareto Values')
+                    else:
+                        axs[i,j].hist2d(trace[:,j+1],trace[:,i+1],bins=50,cmap='cool')
+                        axs[i,j].scatter(lit_values[::4,j+1],lit_values[::4,i+1],color='0.25',marker='o',alpha=0.5,facecolors='none')
+
+        '''
+        axs[0,1].scatter(lit_values[::4,2],lit_values[::4,1],color='0.25',marker='o',alpha=0.5,facecolors='none',label='Pareto Values')
+        axs[0,2].scatter(lit_values[::4,3],lit_values[::4,1],color='0.25',marker='o',alpha=0.5,facecolors='none')
+        axs[0,3].scatter(lit_values[::4,4],lit_values[::4,1],color='0.25',marker='o',alpha=0.5,facecolors='none')
+        axs[1,2].scatter(lit_values[::4,3],lit_values[::4,2],color='0.25',marker='o',alpha=0.5,facecolors='none')
+        axs[1,3].scatter(lit_values[::4,4],lit_values[::4,2],color='0.25',marker='o',alpha=0.5,facecolors='none')
+        axs[2,3].scatter(lit_values[::4,4],lit_values[::4,3],color='0.25',marker='o',alpha=0.5,facecolors='none')
+        
         
         axs[0,1].hist2d(trace[:,2],trace[:,1],bins=100,cmap='cool',label='RJMC Sampling')
         axs[0,2].hist2d(trace[:,3],trace[:,1],bins=100,cmap='cool')
@@ -344,14 +363,8 @@ def create_param_triangle_plot_4D(trace,tracename,lit_values,properties,compound
         axs[1,2].hist2d(trace[:,3],trace[:,2],bins=100,cmap='cool')
         axs[1,3].hist2d(trace[:,4],trace[:,2],bins=100,cmap='cool')
         axs[2,3].hist2d(trace[:,4],trace[:,3],bins=100,cmap='cool')
-        
-        
-        axs[0,1].scatter(lit_values[::4,1],lit_values[::4,0],color='0.25',marker='o',alpha=0.5,facecolors='none',label='Pareto Values')
-        axs[0,2].scatter(lit_values[::4,2],lit_values[::4,0],color='0.25',marker='o',alpha=0.5,facecolors='none')
-        axs[0,3].scatter(lit_values[::4,3],lit_values[::4,0],color='0.25',marker='o',alpha=0.5,facecolors='none')
-        axs[1,2].scatter(lit_values[::4,2],lit_values[::4,1],color='0.25',marker='o',alpha=0.5,facecolors='none')
-        axs[1,3].scatter(lit_values[::4,3],lit_values[::4,1],color='0.25',marker='o',alpha=0.5,facecolors='none')
-        axs[2,3].scatter(lit_values[::4,3],lit_values[::4,2],color='0.25',marker='o',alpha=0.5,facecolors='none')   
+        '''
+
         
        
         #axs[0,1].set_ylim([min(lit_values[:,0]),max(lit_values[:,0])])
@@ -425,10 +438,7 @@ def create_percent_dev_triangle_plot(trace,tracename,lit_values,properties,compo
     axs[2,2].hist(trace[:,2],bins=50,color='m',density=True)
     axs[3,3].hist(trace[:,3],bins=50,color='m',density=True)
     
-    
- 
-    
-    
+        
     axs[0,1].hist2d(trace[:,1],trace[:,0],bins=100,cmap='cool')
     axs[0,2].hist2d(trace[:,2],trace[:,0],bins=100,cmap='cool')
     axs[0,3].hist2d(trace[:,3],trace[:,0],bins=100,cmap='cool')
@@ -436,12 +446,15 @@ def create_percent_dev_triangle_plot(trace,tracename,lit_values,properties,compo
     axs[1,3].hist2d(trace[:,3],trace[:,1],bins=100,cmap='cool')
     axs[2,3].hist2d(trace[:,3],trace[:,2],bins=100,cmap='cool')
     
+ 
     axs[0,1].scatter(lit_values[::4,1],lit_values[::4,0],color='0.25',marker='o',alpha=0.5,facecolors='none',label='Stobener Pareto Values')
     axs[0,2].scatter(lit_values[::4,2],lit_values[::4,0],color='0.25',marker='o',alpha=0.5,facecolors='none')
     axs[0,3].scatter(lit_values[::4,3],lit_values[::4,0],color='0.25',marker='o',alpha=0.5,facecolors='none')
     axs[1,2].scatter(lit_values[::4,2],lit_values[::4,1],color='0.25',marker='o',alpha=0.5,facecolors='none')
     axs[1,3].scatter(lit_values[::4,3],lit_values[::4,1],color='0.25',marker='o',alpha=0.5,facecolors='none')
-    axs[2,3].scatter(lit_values[::4,3],lit_values[::4,2],color='0.25',marker='o',alpha=0.5,facecolors='none')   
+    axs[2,3].scatter(lit_values[::4,3],lit_values[::4,2],color='0.25',marker='o',alpha=0.5,facecolors='none')    
+
+
     
     #axs[0,1].set_xlim([min(lit_values[::4,1]),max(lit_values[::4,1])])
     #axs[0,1].set_ylim([min(lit_values[::4,0]),max(lit_values[::4,0])])
@@ -508,8 +521,14 @@ def import_literature_values(criteria,compound):
     df1=df.iloc[:,1:5]
     df2=df.iloc[:,5:9]
     df1=df1[['epsilon','sigma','L','Q']]
+    df1[4]=1
+    cols=[4,'epsilon','sigma','L','Q']
+    df1=df1[cols]
+    lit_values=np.asarray(df1)
+    lit_values[:,2:]/=10
     
-    return np.asarray(df1),np.asarray(df2)
+    
+    return lit_values,np.asarray(df2)
     #return df1,df2
     
 def plot_bar_chart(prob,properties,compound,n_iter,n_models,file_loc=None):
@@ -541,19 +560,10 @@ def plot_bar_chart(prob,properties,compound,n_iter,n_models,file_loc=None):
     #plt.show()
     return
 
-def recompute_lit_percent_devs(lit_values,computePercentDeviations,temp_values_rhol,temp_values_psat,temp_values_surftens,parameter_values,rhol_data,psat_data,surftens_data,T_c_data,rhol_hat_models,Psat_hat_models,SurfTens_hat_models,T_c_hat_models,compound_2CLJ):
-    new_lit_devs=[]
-    
-    df=pd.DataFrame(lit_values)
-    df[4]=1
-    cols=[4,0,1,2,3]
-    df=df[cols]
-    new_lit_values=np.asarray(df)
-    new_lit_values[:,2:]/=10
-    #print(new_lit_values)
-    
-    for i in range(np.size(new_lit_values,0)):
-        devs=computePercentDeviations(compound_2CLJ,temp_values_rhol,temp_values_psat,temp_values_surftens,new_lit_values[i],rhol_data,psat_data,surftens_data,T_c_data,rhol_hat_models,Psat_hat_models,SurfTens_hat_models,T_c_hat_models)
+def recompute_lit_percent_devs(lit_values,computePercentDeviations,temp_values_rhol,temp_values_psat,temp_values_surftens,rhol_data,psat_data,surftens_data,T_c_data,rhol_hat_models,Psat_hat_models,SurfTens_hat_models,T_c_hat_models,compound_2CLJ):
+    new_lit_devs = []
+    for i in range(np.size(lit_values,0)):
+        devs=computePercentDeviations(compound_2CLJ,temp_values_rhol,temp_values_psat,temp_values_surftens,lit_values[i],rhol_data,psat_data,surftens_data,T_c_data,rhol_hat_models,Psat_hat_models,SurfTens_hat_models,T_c_hat_models)
         new_lit_devs.append(devs)
     return np.asarray(new_lit_devs)
     
@@ -704,7 +714,7 @@ def calc_posterior_refined(model,eps,sig,L,Q):
     #return rhol_hat
 
 def fit_exponential_sp(trace,plot=False):
-    loc,scale = expon.fit(trace[:,4])
+    loc,scale = expon.fit(trace[:,4],floc=0)
     if plot == True:
         xmax = max(trace[:,4])
         xmin = min(trace[:,4])
@@ -739,6 +749,34 @@ def fit_gamma_sp(trace,factor=5,plot=False):
         plt.hist(trace[:,4],bins=50,density=True)
         plt.show()
     return a/factor, loc, theta*factor
+
+def fit_gamma_all_params(trace,factor=20,plot=False):
+    params = []
+    for i in range(1,len(trace[0])):
+        
+        a,loc,theta = gamma.fit(trace[:,i],floc=0)
+        params.append([a/factor,loc,theta*factor])
+        if plot == True:
+            xmax = max(trace[:,i])
+            xmin = min(trace[:,i])
+            xdata = np.linspace(0,xmax*2,num=500)
+            #plt.plot(xdata,gamma.pdf(xdata,a,loc,theta))
+            plt.plot(xdata,gamma.pdf(xdata,a/factor,loc,theta*factor))        
+            plt.hist(trace[:,i],bins=50,density=True)
+            plt.show()
+    return params
+
+def fit_gamma_expon_Q(trace,gammafactor=20,exponfactor=2,plot=False):
+    params = []
+    for i in range(1,len(trace[0])):
+        if i < 4:
+            a,loc,theta = gamma.fit(trace[:,i],floc = 0)
+            params.append([a/gammafactor,loc,theta*gammafactor])
+        if i == 4:
+            loc,scale = expon.fit(trace[:,i],floc = 0)
+            params.append([loc,scale*exponfactor])
+    return params
+
 
 
 def plot_BAR_values(BAR_trace):
