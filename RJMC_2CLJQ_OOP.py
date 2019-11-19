@@ -127,6 +127,13 @@ class RJMC_Simulation():
         self.t_rhol = np.sqrt(1. / sd_rhol)
         self.t_Psat = np.sqrt(1. / sd_Psat)
         self.t_SurfTens = np.sqrt(1. / sd_SurfTens)
+        
+        if self.properties == 'rhol+Psat':    
+            self.lit_params, self.lit_devs = import_literature_values('two', self.compound)
+        elif self.properties == 'All':
+            self.lit_params, self.lit_devs = import_literature_values('three',self.compound)
+            
+
 
     def calc_posterior(self, prior, compound_2CLJ, chain_values):
         # def calc_posterior(model,eps,sig,L,Q,biasing_factor_UA=0,biasing_factor_AUA=0,biasing_factor_AUA_Q=0):
@@ -245,7 +252,24 @@ class RJMC_Simulation():
                                                                   Psat_hat_models,
                                                                   SurfTens_hat_models,
                                                                   T_c_hat_models)
-
+        self.new_lit_devs = []
+        for i in range(len(self.lit_params[:,0])):
+            self.new_lit_devs.append(computePercentDeviations(compound_2CLJ,
+                                                                      self.thermo_data_rhoL[:, 0],
+                                                                      self.thermo_data_Pv[:, 0],
+                                                                      self.thermo_data_SurfTens[:, 0],
+                                                                      self.lit_params[i],
+                                                                      self.thermo_data_rhoL[:, 1],
+                                                                      self.thermo_data_Pv[:, 1],
+                                                                      self.thermo_data_SurfTens[:, 1],
+                                                                      self.Tc_lit[0],
+                                                                      rhol_hat_models,
+                                                                      Psat_hat_models,
+                                                                      SurfTens_hat_models,
+                                                                      T_c_hat_models))
+        self.new_lit_devs = np.asarray(self.new_lit_devs)
+    
+        
     def gen_Tmatrix(self, prior, compound_2CLJ):
         ''' Generate Transition matrices based on the optimal eps, sig, Q for different models'''
 
@@ -626,7 +650,7 @@ class RJMC_Simulation():
         self.logp_trace_tuned = self.logp_trace[self.tune_for + 1:]
         self.percent_dev_trace_tuned = self.percent_dev_trace[self.tune_for + 1:]
 
-        self.lit_params, self.lit_devs = import_literature_values('two', self.compound)
+
         trace_equil = self.trace_tuned
         logp_trace_equil = self.logp_trace_tuned
         percent_dev_trace_equil = self.percent_dev_trace_tuned
@@ -713,9 +737,8 @@ class RJMC_Simulation():
         else:
             self.BF_BAR = None
             
-
-        if plotting:
-
+        if plotting == True:
+            #DEPRECATED
             create_param_triangle_plot_4D(self.trace_model_0, 'trace_model_0',
                                           self.lit_params, self.properties, self.compound, self.steps)
             create_param_triangle_plot_4D(self.trace_model_1, 'trace_model_1',
@@ -853,6 +876,7 @@ class RJMC_Simulation():
         plt.savefig(path + '/figures/model_trace.png')
         plt.close()
 
+
         create_param_triangle_plot_4D(
             self.trace_model_0,
             'triangle_plot_trace_model_0',
@@ -883,7 +907,7 @@ class RJMC_Simulation():
         create_percent_dev_triangle_plot(
             self.percent_dev_trace_tuned,
             'triangle_plot_percent_dev_trace',
-            self.lit_devs,
+            self.new_lit_devs,
             self.properties,
             self.compound,
             self.steps,
